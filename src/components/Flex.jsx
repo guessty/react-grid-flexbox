@@ -1,9 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
+import './../sass/Flex.scss'
 
-const classNames = (classHash) => Object.keys(classHash).reduce((classString, key) => {
-  return classHash[key] ? `${classString} ${key}` : classString;
-}, '');
+const classNames = (classHash) => Object.keys(classHash).reduce((classString, key) => (classHash[key] ? `${classString} ${key}` : classString), '')
 
 const FlexChild = ({
   className,
@@ -13,26 +12,24 @@ const FlexChild = ({
   _scroll,
   _inlineSizes,
 }) => {
-  const inlineSizeClasses = {};
+  const inlineSizeClasses = {}
   _inlineSizes.forEach((size) => {
-    inlineSizeClasses[`flex-child--${ size }`] = true;
-  });
+    inlineSizeClasses[`flex-child--${ size }`] = true
+  })
 
   const childClasses = classNames(Object.assign({}, {
     'flex-child--grow': _grow,
     'flex-child--reset': _reset,
     'flex-child--scroll': _scroll,
-  }, inlineSizeClasses));
+  }, inlineSizeClasses))
 
-  const renderChildWithClassName = () => {
-    return (className) ? (
-      <div className={ className }>
-        { children }
-      </div>
-    ) : children;
-  };
+  const renderChildWithClassName = () => (className) ? (
+    <div className={ className }>
+      { children }
+    </div>
+  ) : children
 
-  return (flexReset || flexScroll) ? (
+  return (_reset || _scroll) ? (
     <div className={ childClasses }>
       <div>
         {renderChildWithClassName()}
@@ -42,8 +39,8 @@ const FlexChild = ({
     <div className={ childClasses }>
       {renderChildWithClassName()}
     </div>
-  );
-};
+  )
+}
 
 FlexChild.propTypes = {
   className: PropTypes.string,
@@ -52,7 +49,7 @@ FlexChild.propTypes = {
   _reset: PropTypes.bool,
   _scroll: PropTypes.bool,
   _inlineSizes: PropTypes.array,
-};
+}
 
 FlexChild.defaultProps = {
   className: null,
@@ -60,7 +57,7 @@ FlexChild.defaultProps = {
   _reset: false,
   _scroll: false,
   _inlineSizes: [],
-};
+}
 
 
 class Flex extends React.PureComponent {
@@ -78,32 +75,32 @@ class Flex extends React.PureComponent {
       'flex--gutters-3x': this.props.gutters3x,
       'flex--gutters-4x': this.props.gutters4x,
       'flex--gutters-5x': this.props.gutters5x,
-    });
+    })
 
     const flexChildren = React.Children.map(this.props.children, (child) => {
       // Wrap any children in a div to prevent potential css flex layout overrides.
       if (child) {
         const flexChildProps = Object.keys(FlexChild.defaultProps).reduce((props, key) => {
           if (key !== 'className') {
-            props[key] = child.props[key];
+            props[key] = child.props[key]
           }
-          return props;
-        }, {});
+          return props
+        }, {})
 
-        const childPropsWithoutFlexProps = Object.assign({}, child.props);
+        const childPropsWithoutFlexProps = Object.assign({}, child.props)
 
         Object.keys(flexChildProps).forEach((key) => {
-          delete childPropsWithoutFlexProps[key];
-        });
+          delete childPropsWithoutFlexProps[key]
+        })
 
         const wrapped = React.createElement('div', flexChildProps, Object.assign({}, child, {
           props: childPropsWithoutFlexProps,
-        }));
+        }))
 
-        return <FlexChild { ...wrapped.props } />;
+        return <FlexChild { ...wrapped.props } />
       }
-      return (child) ? (<FlexChild { ...child.props } />) : null;
-    });
+      return (child) ? (<FlexChild { ...child.props } />) : null
+    })
 
     return (this.props.className) ? (
       <div className={ this.props.className }>
@@ -115,7 +112,7 @@ class Flex extends React.PureComponent {
       <div className={ flexClasses }>
         { flexChildren }
       </div>
-    );
+    )
   }
 }
 
@@ -133,7 +130,7 @@ Flex.propTypes = {
   gutters3x: PropTypes.bool,
   gutters4x: PropTypes.bool,
   gutters5x: PropTypes.bool,
-};
+}
 
 Flex.defaultProps = {
   className: null,
@@ -148,6 +145,6 @@ Flex.defaultProps = {
   gutters3x: false,
   gutters4x: false,
   gutters5x: false,
-};
+}
 
-export default Flex;
+export default Flex
