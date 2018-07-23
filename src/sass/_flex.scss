@@ -1,0 +1,165 @@
+//
+// Variables
+// --------------------------------------------------
+
+//** Number of max columns in the grid
+$flexMaxColumns: 12;
+
+//** Padding between columns. Gets divided in half for the left and right
+$flexGutterWidth: 10px;
+
+//** Row breakpoints 
+$flexSizes: (xs: 0px, sm: 768px, md: 992px, lg: 1200px);
+$flexSizesNames: map-keys($sizes);
+
+//** Flex Gutters
+$flexGutters: (default: 1, half: 0.5, 2x: 2, 3x: 3, 4x: 4, 5x: 5);
+$flexGuttersKeys: map-keys($flexGutters);
+
+
+//
+// Flex & Flex Modifiers
+// --------------------------------------------------
+
+.flex {
+  // By default flex stacks its children vertically and will lay its children out
+  // in a similar way to how traditional div elements behave ie as block-lines.
+  display: flex;
+  flex-wrap: nowrap;
+  align-content: flex-start;
+  flex-direction: column; 
+
+  // Fix for IE text not wrapping wihin a .flex
+  > * {
+    max-width: 100%;
+  }
+
+  &--inline {
+    // The inline modifier enables .flex to lay out its children horizontally
+    // in a similar way to how traditional span elements behave ie as in-lines
+    flex-direction: row;
+  }
+
+  &--wrap {
+    // When in 'horizontal' (--inline) mode this modifier will enable child elements to
+    // automatically wrap to the next line.
+    // This modifier has no effect when in 'vertial' (default) mode.
+    &.flex--inline {
+      flex-wrap: wrap;
+    }
+  }
+
+  &--items-center {
+    // When in 'vertical' mode this modifier will center the children horizontally.
+    // When in 'horizontal' mode this modifier will center the children vertically.
+    align-items: center;
+  }
+
+  &--full-height {
+    min-height: 100%;
+  }
+}
+
+
+//
+// Flex Child Modifiers
+// --------------------------------------------------
+
+.flex {
+
+  .flex-child {
+
+    &--grow {
+      // Works in both modes and will cause the element to fill any remaining space.
+      flex-grow: 1;
+    }
+
+    &--scroll {
+      // Adds scrolling to the direct child of a flex-child
+      & > * {
+        max-height: 100%;
+        max-width: 100%;
+        overflow: auto;
+      }
+    }
+  }
+
+  &:not(.flex--inline) {
+    .flex-child--reset {
+      // When using the grow modifier in .flex's 'vertical' mode it has been noticed that
+      // any further child elements loose the ability to be able to work out their height
+      // ie you can no longer use height: 100%; or min-height: 100%;
+      // This modifier resets the direct child element of a flex-child and restores the
+      // ability to use the height styles.
+      // This modifier only works in 'vertical' mode and with the use of --grow.
+      &.flex-child--grow {
+        position: relative;
+  
+        & > * {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+        }
+      }
+    }
+  }
+
+  &.flex--inline {
+    // When in 'horizontal' mode, flex-child supports sizing / spaning across
+    // 12 ($flexMaxColumns) columns.
+    @each $size in $flexSizesNames {
+      @media (min-width: map-get($flexSizes, $size)) {
+        @for $denominator from 1 through $flexMaxColumns {
+          @for $numerator from 1 through $denominator {
+            .flex-child--#{$size}-#{$numerator}-#{$denominator} {
+              width: percentage($numerator / $denominator);
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+//
+// Flex Spacing / Gutters
+// --------------------------------------------------
+
+.flex {
+
+  @each $gutterKey in $flexGuttersKeys {
+    $gutterClass: gutters-#{$gutterKey};
+    @if $gutterKey == default {
+      $gutterClass: gutters;
+    }
+    $gutterValue: map-get($flexGutters, $gutterKey);
+    $gutterSpacing: $flexGutterWidth * $gutterValue;
+
+    &--#{$gutterClass} {
+      margin: -$gutterSpacing;
+
+      &.flex--container {
+        margin: 0;
+        padding: $gutterSpacing;
+      }
+
+      & > * {
+        padding: $gutterSpacing;
+      }
+
+      &:not(.flex--inline) > .flex-child--reset.flex-child--grow {
+        & > * {
+          width: calc(100% - (#{$gutterSpacing} * 2));
+          height: calc(100% - (#{$gutterSpacing} * 2));
+        }
+      }
+  
+      & > .flex-child--scroll {
+        & > * {
+          max-width: calc(100% - (#{$gutterSpacing} * 2));
+          max-height: calc(100% - (#{$gutterSpacing} * 2));
+        }
+      }
+    }
+  }
+}
