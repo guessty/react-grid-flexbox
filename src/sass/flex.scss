@@ -9,7 +9,7 @@ $flexMaxColumns: 12;
 $flexGutterWidth: 10px;
 
 //** Row breakpoints 
-$flexSizes: (xs: 0px, sm: 768px, md: 992px, lg: 1200px);
+$flexSizes: (tn: 0px, xs: 500px, sm: 768px, md: 992px, lg: 1200px, xl: 1440px, hg: 1920px);
 $flexSizesNames: map-keys($flexSizes);
 
 //** Flex Gutters
