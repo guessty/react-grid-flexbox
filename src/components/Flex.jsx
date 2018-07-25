@@ -1,9 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import './../sass/Flex.scss'
-
-// const classNames = (classHash) => Object.keys(classHash).reduce((classString, key) => (classHash[key] ? `${classString} ${key}` : classString), '')
 
 const defaultBreakpoints = {
   tn: '0px', xs: '500px', sm: '768px', md: '992px',
@@ -36,19 +33,7 @@ const FlexChild = ({
   _scroll,
   cssSpacing,
   isInline,
-  // _inlineSizes,
 }) => {
-  // const inlineSizeClasses = {}
-  // _inlineSizes.forEach((size) => {
-  //   inlineSizeClasses[`flex-child--${ size }`] = true
-  // })
-
-  // const childClasses = classNames(Object.assign({}, {
-  //   'flex-child--grow': _grow,
-  //   'flex-child--reset': _reset,
-  //   'flex-child--scroll': _scroll,
-  // }, inlineSizeClasses))
-
   const StyledFlexChild = styled.div`
     padding: ${cssSpacing};
     ${_grow ? 'flex-grow: 1;' : ''}
@@ -98,7 +83,6 @@ FlexChild.propTypes = {
   _scroll: PropTypes.bool,
   isInline: PropTypes.bool,
   cssSpacing: PropTypes.string,
-  // _inlineSizes: PropTypes.array,
 }
 
 FlexChild.defaultProps = {
@@ -109,27 +93,11 @@ FlexChild.defaultProps = {
   _basis: null,
   isInline: false,
   cssSpacing: '0px',
-  // _inlineSizes: [],
 }
 
 
 class Flex extends React.PureComponent {
   render() {
-    // const flexClasses = classNames({
-    //   'flex': true,
-    //   'flex--inline': this.props.inline,
-    //   'flex--wrap': this.props.wrap,
-    //   'flex--items-center': this.props.itemsCenter,
-    //   'flex--full-height': this.props.fullHeight,
-    //   'flex--container': this.props.container,
-    //   'flex--gutters-half': this.props.guttersHalf,
-    //   'flex--gutters': this.props.gutters,
-    //   'flex--gutters-2x': this.props.gutters2x,
-    //   'flex--gutters-3x': this.props.gutters3x,
-    //   'flex--gutters-4x': this.props.gutters4x,
-    //   'flex--gutters-5x': this.props.gutters5x,
-    // })
-
     const cssSpacing = `${this.props.gutter / 2}${this.props.gutterUnits}`
 
     const StyledFlex = styled.div`
@@ -141,9 +109,9 @@ class Flex extends React.PureComponent {
       ${this.props.fullHeight ? 'min-height: 100%;' : ''}
       ${this.props.container ? `
         margin: 0;
-        padding ${cssSpacing}
+        padding: ${cssSpacing};
       ` : `
-        margin: -${cssSpacing}
+        margin: -${cssSpacing};
       `}
 
       > * {
@@ -198,12 +166,8 @@ Flex.propTypes = {
   itemsCenter: PropTypes.bool,
   fullHeight: PropTypes.bool,
   container: PropTypes.bool,
-  gutters: PropTypes.bool,
-  guttersHalf: PropTypes.bool,
-  gutters2x: PropTypes.bool,
-  gutters3x: PropTypes.bool,
-  gutters4x: PropTypes.bool,
-  gutters5x: PropTypes.bool,
+  gutter: PropTypes.number,
+  gutterUnits: PropTypes.string,
 }
 
 Flex.defaultProps = {
@@ -213,12 +177,8 @@ Flex.defaultProps = {
   itemsCenter: false,
   fullHeight: false,
   container: false,
-  gutters: false,
-  guttersHalf: false,
-  gutters2x: false,
-  gutters3x: false,
-  gutters4x: false,
-  gutters5x: false,
+  gutter: 0,
+  gutterUnits: 'px',
 }
 
 export default Flex

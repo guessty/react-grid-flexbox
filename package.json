@@ -1,6 +1,6 @@
 {
   "name": "react-grid-flexbox",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A set of React components that implement css grid and flex-box ",
   "keywords": [
     "react",
@@ -13,7 +13,6 @@
   "main": "dist/react-grid-flexbox.cjs.js",
   "module": "dist/react-grid-flexbox.esm.js",
   "browser": "dist/react-grid-flexbox.umd.js",
-  "css": "dist/react-grid-flexbox.css",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",
@@ -35,11 +34,9 @@
     "babel-preset-react": "^6.24.1",
     "eslint": "^5.2.0",
     "eslint-config-react-tools": "^1.1.6",
-    "node-sass": "^4.9.2",
     "rollup": "^0.60.0",
     "rollup-plugin-babel": "^3.0.7",
     "rollup-plugin-commonjs": "^9.1.0",
-    "rollup-plugin-node-resolve": "^3.0.0",
-    "rollup-plugin-scss": "^0.4.0"
+    "rollup-plugin-node-resolve": "^3.0.0"
   }
 }
