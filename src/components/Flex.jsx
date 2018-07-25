@@ -171,7 +171,7 @@ Flex.propTypes = {
   itemsCenter: PropTypes.bool,
   fullHeight: PropTypes.bool,
   container: PropTypes.bool,
-  gutter: PropTypes.number,
+  gutter: PropTypes.string,
 }
 
 Flex.defaultProps = {
@@ -181,7 +181,7 @@ Flex.defaultProps = {
   itemsCenter: false,
   fullHeight: false,
   container: false,
-  gutter: 0,
+  gutter: '0px',
 }
 
 export default Flex
