@@ -1,27 +1,74 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
 import './../sass/Flex.scss'
 
-const classNames = (classHash) => Object.keys(classHash).reduce((classString, key) => (classHash[key] ? `${classString} ${key}` : classString), '')
+// const classNames = (classHash) => Object.keys(classHash).reduce((classString, key) => (classHash[key] ? `${classString} ${key}` : classString), '')
+
+const defaultBreakpoints = {
+  tn: '0px', xs: '500px', sm: '768px', md: '992px',
+  lg: '1200px', xl: '1440px', hg: '1920px',
+}
+
+const mediaBasis = (basis) => {
+  if (typeof basis === 'string') {
+    return `flex-basis: ${basis};`
+  } else if (basis === Object(basis)) {
+    return Object.keys(basis).reduce((basisString, key) => (`
+      ${basisString}
+      @media (min-width: ${defaultBreakpoints[key] ?
+        defaultBreakpoints[key] : key
+      }) {
+        flex-basis: ${basis[key]};
+      }
+    `), '')
+  }
+  return 'flex-basis: auto;'
+}
+  
 
 const FlexChild = ({
   className,
   children,
   _grow,
+  _basis,
   _reset,
   _scroll,
-  _inlineSizes,
+  cssSpacing,
+  isInline,
+  // _inlineSizes,
 }) => {
-  const inlineSizeClasses = {}
-  _inlineSizes.forEach((size) => {
-    inlineSizeClasses[`flex-child--${ size }`] = true
-  })
+  // const inlineSizeClasses = {}
+  // _inlineSizes.forEach((size) => {
+  //   inlineSizeClasses[`flex-child--${ size }`] = true
+  // })
 
-  const childClasses = classNames(Object.assign({}, {
-    'flex-child--grow': _grow,
-    'flex-child--reset': _reset,
-    'flex-child--scroll': _scroll,
-  }, inlineSizeClasses))
+  // const childClasses = classNames(Object.assign({}, {
+  //   'flex-child--grow': _grow,
+  //   'flex-child--reset': _reset,
+  //   'flex-child--scroll': _scroll,
+  // }, inlineSizeClasses))
+
+  const StyledFlexChild = styled.div`
+    padding: ${cssSpacing};
+    ${_grow ? 'flex-grow: 1;' : ''}
+    ${_basis ? mediaBasis(_basis) : ''} 
+    ${_scroll ? `
+      > * {
+        max-width: calc(100% - (${cssSpacing} * 2));
+        max-height: calc(100% - (${cssSpacing} * 2));
+        overflow: auto;
+      }
+    ` : ''}
+    ${!isInline && _grow && _reset ? `
+      position: relative;
+      > * {
+        position: absolute;
+        width: calc(100% - (${cssSpacing} * 2));
+        height: calc(100% - (${cssSpacing} * 2));
+      }
+    ` : ''}
+  `
 
   const renderChildWithClassName = () => (className) ? (
     <div className={ className }>
@@ -30,15 +77,15 @@ const FlexChild = ({
   ) : children
 
   return (_reset || _scroll) ? (
-    <div className={ childClasses }>
+    <StyledFlexChild>
       <div>
         {renderChildWithClassName()}
       </div>
-    </div>
+    </StyledFlexChild>
   ) : (
-    <div className={ childClasses }>
+    <StyledFlexChild>
       {renderChildWithClassName()}
-    </div>
+    </StyledFlexChild>
   )
 }
 
@@ -46,9 +93,12 @@ FlexChild.propTypes = {
   className: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
   _grow: PropTypes.bool,
+  _basis: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
   _reset: PropTypes.bool,
   _scroll: PropTypes.bool,
-  _inlineSizes: PropTypes.array,
+  isInline: PropTypes.bool,
+  cssSpacing: PropTypes.string,
+  // _inlineSizes: PropTypes.array,
 }
 
 FlexChild.defaultProps = {
@@ -56,26 +106,50 @@ FlexChild.defaultProps = {
   _grow: false,
   _reset: false,
   _scroll: false,
-  _inlineSizes: [],
+  _basis: null,
+  isInline: false,
+  cssSpacing: '0px',
+  // _inlineSizes: [],
 }
 
 
 class Flex extends React.PureComponent {
   render() {
-    const flexClasses = classNames({
-      'flex': true,
-      'flex--inline': this.props.inline,
-      'flex--wrap': this.props.wrap,
-      'flex--items-center': this.props.itemsCenter,
-      'flex--full-height': this.props.fullHeight,
-      'flex--container': this.props.container,
-      'flex--gutters-half': this.props.guttersHalf,
-      'flex--gutters': this.props.gutters,
-      'flex--gutters-2x': this.props.gutters2x,
-      'flex--gutters-3x': this.props.gutters3x,
-      'flex--gutters-4x': this.props.gutters4x,
-      'flex--gutters-5x': this.props.gutters5x,
-    })
+    // const flexClasses = classNames({
+    //   'flex': true,
+    //   'flex--inline': this.props.inline,
+    //   'flex--wrap': this.props.wrap,
+    //   'flex--items-center': this.props.itemsCenter,
+    //   'flex--full-height': this.props.fullHeight,
+    //   'flex--container': this.props.container,
+    //   'flex--gutters-half': this.props.guttersHalf,
+    //   'flex--gutters': this.props.gutters,
+    //   'flex--gutters-2x': this.props.gutters2x,
+    //   'flex--gutters-3x': this.props.gutters3x,
+    //   'flex--gutters-4x': this.props.gutters4x,
+    //   'flex--gutters-5x': this.props.gutters5x,
+    // })
+
+    const cssSpacing = `${this.props.gutter / 2}${this.props.gutterUnits}`
+
+    const StyledFlex = styled.div`
+      display: flex;
+      align-content: flex-start;
+      flex-driection: ${this.props.inline ? 'row' : 'column'};
+      flex-wrap: ${this.props.wrap && this.props.inline ? 'wrap' : 'no-wrap'};
+      ${this.props.itemsCenter ? 'align-items: center;' : ''}
+      ${this.props.fullHeight ? 'min-height: 100%;' : ''}
+      ${this.props.container ? `
+        margin: 0;
+        padding ${cssSpacing}
+      ` : `
+        margin: -${cssSpacing}
+      `}
+
+      > * {
+        max-width: 100%;
+      }
+    `
 
     const flexChildren = React.Children.map(this.props.children, (child) => {
       // Wrap any children in a div to prevent potential css flex layout overrides.
@@ -97,21 +171,21 @@ class Flex extends React.PureComponent {
           props: childPropsWithoutFlexProps,
         }))
 
-        return <FlexChild { ...wrapped.props } />
+        return <FlexChild { ...wrapped.props } cssSpacing={cssSpacing} isInline={this.props.inline} />
       }
-      return (child) ? (<FlexChild { ...child.props } />) : null
+      return null
     })
 
     return (this.props.className) ? (
       <div className={ this.props.className }>
-        <div className={ flexClasses }>
+        <StyledFlex>
           { flexChildren }
-        </div>
+        </StyledFlex>
       </div>
     ) : (
-      <div className={ flexClasses }>
+      <StyledFlex>
         { flexChildren }
-      </div>
+      </StyledFlex>
     )
   }
 }

@@ -9,7 +9,8 @@ export default [
 		input: 'src/main.js',
 		external: [
 			'react', 
-			'prop-types'
+			'prop-types',
+			'styled-components'
 		],
 		output: [
 			{
@@ -18,7 +19,8 @@ export default [
 				format: 'umd',
 				globals: {
 					'react': 'React',
-					'prop-types': 'PropTypes'
+					'prop-types': 'PropTypes',
+					'styled-components': 'styled'
 				},
 			},
 			{ file: pkg.main, format: 'cjs' },
