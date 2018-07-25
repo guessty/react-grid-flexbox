@@ -35,7 +35,7 @@ const FlexChild = ({
   inline,
 }) => {
   const StyledFlexChild = styled.div`
-    padding: ${cssSpacing};
+    padding: calc(${gutter} / 2);
     ${_grow ? 'flex-grow: 1;' : ''}
     ${_basis ? mediaBasis(_basis) : ''} 
     ${_scroll ? `
