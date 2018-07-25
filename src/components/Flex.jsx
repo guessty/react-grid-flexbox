@@ -31,8 +31,8 @@ const FlexChild = ({
   _basis,
   _reset,
   _scroll,
-  cssSpacing,
-  isInline,
+  gutter,
+  inline,
 }) => {
   const StyledFlexChild = styled.div`
     padding: ${cssSpacing};
@@ -40,17 +40,17 @@ const FlexChild = ({
     ${_basis ? mediaBasis(_basis) : ''} 
     ${_scroll ? `
       > * {
-        max-width: calc(100% - (${cssSpacing} * 2));
-        max-height: calc(100% - (${cssSpacing} * 2));
+        max-width: calc(100% - ${gutter});
+        max-height: calc(100% - ${gutter});
         overflow: auto;
       }
     ` : ''}
-    ${!isInline && _grow && _reset ? `
+    ${!inline && _grow && _reset ? `
       position: relative;
       > * {
         position: absolute;
-        width: calc(100% - (${cssSpacing} * 2));
-        height: calc(100% - (${cssSpacing} * 2));
+        width: calc(100% - ${gutter});
+        height: calc(100% - ${gutter});
       }
     ` : ''}
   `
@@ -81,8 +81,8 @@ FlexChild.propTypes = {
   _basis: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
   _reset: PropTypes.bool,
   _scroll: PropTypes.bool,
-  isInline: PropTypes.bool,
-  cssSpacing: PropTypes.string,
+  inline: PropTypes.bool,
+  gutter: PropTypes.string,
 }
 
 FlexChild.defaultProps = {
@@ -91,71 +91,76 @@ FlexChild.defaultProps = {
   _reset: false,
   _scroll: false,
   _basis: null,
-  isInline: false,
-  cssSpacing: '0px',
+  inline: false,
+  gutter: '0px',
 }
 
 
-class Flex extends React.PureComponent {
-  render() {
-    const cssSpacing = `${this.props.gutter / 2}${this.props.gutterUnits}`
+const Flex = ({
+  className,
+  children,
+  inline,
+  wrap,
+  itemsCenter,
+  fullHeight,
+  container,
+  gutter,
+}) => {
+  const StyledFlex = styled.div`
+    display: flex;
+    align-content: flex-start;
+    flex-driection: ${inline ? 'row' : 'column'};
+    flex-wrap: ${wrap && inline ? 'wrap' : 'no-wrap'};
+    ${itemsCenter ? 'align-items: center;' : ''}
+    ${fullHeight ? 'min-height: 100%;' : ''}
+    ${container ? `
+      margin: 0;
+      padding: calc(${gutter} / 2);
+    ` : `
+      margin: calc(-${gutter} / 2);
+    `}
 
-    const StyledFlex = styled.div`
-      display: flex;
-      align-content: flex-start;
-      flex-driection: ${this.props.inline ? 'row' : 'column'};
-      flex-wrap: ${this.props.wrap && this.props.inline ? 'wrap' : 'no-wrap'};
-      ${this.props.itemsCenter ? 'align-items: center;' : ''}
-      ${this.props.fullHeight ? 'min-height: 100%;' : ''}
-      ${this.props.container ? `
-        margin: 0;
-        padding: ${cssSpacing};
-      ` : `
-        margin: -${cssSpacing};
-      `}
+    > * {
+      max-width: 100%;
+    }
+  `
 
-      > * {
-        max-width: 100%;
-      }
-    `
+  const flexChildren = React.Children.map(children, (child) => {
+    // Wrap any children in a div to prevent potential css flex layout overrides.
+    if (child) {
+      const flexChildProps = Object.keys(FlexChild.defaultProps).reduce((props, key) => {
+        if (key !== 'className') {
+          props[key] = child.props[key]
+        }
+        return props
+      }, {})
 
-    const flexChildren = React.Children.map(this.props.children, (child) => {
-      // Wrap any children in a div to prevent potential css flex layout overrides.
-      if (child) {
-        const flexChildProps = Object.keys(FlexChild.defaultProps).reduce((props, key) => {
-          if (key !== 'className') {
-            props[key] = child.props[key]
-          }
-          return props
-        }, {})
+      const childPropsWithoutFlexProps = Object.assign({}, child.props)
 
-        const childPropsWithoutFlexProps = Object.assign({}, child.props)
+      Object.keys(flexChildProps).forEach((key) => {
+        delete childPropsWithoutFlexProps[key]
+      })
 
-        Object.keys(flexChildProps).forEach((key) => {
-          delete childPropsWithoutFlexProps[key]
-        })
+      const wrapped = React.createElement('div', flexChildProps, Object.assign({}, child, {
+        props: childPropsWithoutFlexProps,
+      }))
 
-        const wrapped = React.createElement('div', flexChildProps, Object.assign({}, child, {
-          props: childPropsWithoutFlexProps,
-        }))
+      return <FlexChild { ...wrapped.props } gutter={gutter} isInline={inline} />
+    }
+    return null
+  })
 
-        return <FlexChild { ...wrapped.props } cssSpacing={cssSpacing} isInline={this.props.inline} />
-      }
-      return null
-    })
-
-    return (this.props.className) ? (
-      <div className={ this.props.className }>
-        <StyledFlex>
-          { flexChildren }
-        </StyledFlex>
-      </div>
-    ) : (
+  return (className) ? (
+    <div className={ className }>
       <StyledFlex>
         { flexChildren }
       </StyledFlex>
-    )
-  }
+    </div>
+  ) : (
+    <StyledFlex>
+      { flexChildren }
+    </StyledFlex>
+  )
 }
 
 Flex.propTypes = {
@@ -167,7 +172,6 @@ Flex.propTypes = {
   fullHeight: PropTypes.bool,
   container: PropTypes.bool,
   gutter: PropTypes.number,
-  gutterUnits: PropTypes.string,
 }
 
 Flex.defaultProps = {
@@ -178,7 +182,6 @@ Flex.defaultProps = {
   fullHeight: false,
   container: false,
   gutter: 0,
-  gutterUnits: 'px',
 }
 
 export default Flex
