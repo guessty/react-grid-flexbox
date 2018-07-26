@@ -16,7 +16,7 @@ const FlexChild = ({
   inline,
 }) => {
   const StyledFlexChild = styled.div`
-    padding: calc(${gutter} / 2);
+    ${composeCSSMedia('padding', gutter, null, (value) => `calc(${value} / 2)`)}
     ${_grow ? 'flex-grow: 1;' : ''}
     ${_basis ? composeCSSMedia('flex-basis', _basis, 'auto') : ''} 
     ${_scroll ? `
