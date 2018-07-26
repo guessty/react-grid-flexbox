@@ -50,9 +50,11 @@ const Grid = ({
   rows,
   areas,
   gutter,
+  container,
 }) => {
   const StyledGrid = styled.div`
     display: grid;
+    padding: ${container ? gutter : '0px'};
     ${mediaTemplate('columns', columns)}
     ${mediaTemplate('rows', rows)}
     ${mediaTemplate('areas', areas)}
@@ -99,6 +101,7 @@ Grid.propTypes = {
   rows: PropTypes.string,
   areas: PropTypes.string.isRequired,
   gutter: PropTypes.string,
+  container: PropTypes.bool,
 }
 
 Grid.defaultProps = {
@@ -106,6 +109,7 @@ Grid.defaultProps = {
   columns: 'auto',
   rows: 'auto',
   gutter: '0px',
+  container: false,
 }
 
 export default Grid
