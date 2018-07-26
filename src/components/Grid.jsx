@@ -97,9 +97,12 @@ const Grid = ({
 Grid.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
   className: PropTypes.string,
-  columns: PropTypes.string,
-  rows: PropTypes.string,
-  areas: PropTypes.string.isRequired,
+  columns: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
+  rows: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
+  areas: PropTypes.oneOfType([
+    PropTypes.string.isRequired,
+    PropTypes.objectOf(PropTypes.string.isRequired)
+  ]),
   gutter: PropTypes.string,
   container: PropTypes.bool,
 }
