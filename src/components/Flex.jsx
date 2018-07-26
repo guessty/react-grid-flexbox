@@ -109,8 +109,8 @@ const Flex = ({
   const StyledFlex = styled.div`
     display: flex;
     align-content: flex-start;
-    flex-driection: ${inline ? 'row' : 'column'};
-    flex-wrap: ${wrap && inline ? 'wrap' : 'no-wrap'};
+    flex-direction: ${inline ? 'row' : 'column'};
+    flex-wrap: ${wrap && inline ? 'wrap' : 'nowrap'};
     ${itemsCenter ? 'align-items: center;' : ''}
     ${fullHeight ? 'min-height: 100%;' : ''}
     ${container ? `
