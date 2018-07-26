@@ -63,7 +63,7 @@ FlexChild.propTypes = {
   _reset: PropTypes.bool,
   _scroll: PropTypes.bool,
   inline: PropTypes.bool,
-  gutter: PropTypes.string,
+  gutter: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
 }
 
 FlexChild.defaultProps = {
