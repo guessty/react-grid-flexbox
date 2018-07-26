@@ -1,34 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+//
+import { composeCSSMedia } from './../helpers'
 
-const defaultBreakpoints = {
-  tn: '0px', xs: '500px', sm: '768px', md: '992px',
-  lg: '1200px', xl: '1440px', hg: '1920px',
-}
-
-const mediaTemplate = (direction, template) => {
-  if (typeof template === 'string') {
-    return `grid-template-${direction}: ${template};`
-  } else if (template === Object(template)) {
-    return Object.keys(template).reduce((templateString, key) => (`
-      ${templateString}
-      @media (min-width: ${defaultBreakpoints[key] ?
-        defaultBreakpoints[key] : key
-      }) {
-        grid-template-${direction}: ${template[key]};
-      }
-    `), '')
-  }
-  return `grid-template-${direction}: auto;`
-}
 
 const GridChild = ({
   children,
   _area,
 }) => {
   const StyledGridChild = styled.div`
-    grid-area: ${_area}
+    ${composeCSSMedia('grid-area', _area, 'auto')}
   `
 
   return (
@@ -40,7 +22,7 @@ const GridChild = ({
 
 GridChild.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
-  _area: PropTypes.string.isRequired,
+  _area: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]).isRequired,
 }
 
 const Grid = ({
@@ -54,11 +36,11 @@ const Grid = ({
 }) => {
   const StyledGrid = styled.div`
     display: grid;
-    padding: ${container ? gutter : '0px'};
-    ${mediaTemplate('columns', columns)}
-    ${mediaTemplate('rows', rows)}
-    ${mediaTemplate('areas', areas)}
-    grid-gap: ${gutter};
+    ${composeCSSMedia('grid-template-columns', columns, 'auto')}
+    ${composeCSSMedia('grid-template-rows', rows, 'auto')}
+    ${composeCSSMedia('grid-template-areas', areas)}
+    ${composeCSSMedia('grid-gap', gutter)}
+    ${container ? composeCSSMedia('padding', gutter) : ''}
   `
 
   const gridChildren = React.Children.map(children, (child) => {
@@ -99,11 +81,8 @@ Grid.propTypes = {
   className: PropTypes.string,
   columns: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
   rows: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
-  areas: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.objectOf(PropTypes.string)
-  ]).isRequired,
-  gutter: PropTypes.string,
+  areas: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]).isRequired,
+  gutter: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
   container: PropTypes.bool,
 }
 

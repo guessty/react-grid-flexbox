@@ -1,28 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+//
+import { composeCSSMedia } from './../helpers'
 
-const defaultBreakpoints = {
-  tn: '0px', xs: '500px', sm: '768px', md: '992px',
-  lg: '1200px', xl: '1440px', hg: '1920px',
-}
-
-const mediaBasis = (basis) => {
-  if (typeof basis === 'string') {
-    return `flex-basis: ${basis};`
-  } else if (basis === Object(basis)) {
-    return Object.keys(basis).reduce((basisString, key) => (`
-      ${basisString}
-      @media (min-width: ${defaultBreakpoints[key] ?
-        defaultBreakpoints[key] : key
-      }) {
-        flex-basis: ${basis[key]};
-      }
-    `), '')
-  }
-  return 'flex-basis: auto;'
-}
-  
 
 const FlexChild = ({
   className,
@@ -37,11 +18,11 @@ const FlexChild = ({
   const StyledFlexChild = styled.div`
     padding: calc(${gutter} / 2);
     ${_grow ? 'flex-grow: 1;' : ''}
-    ${_basis ? mediaBasis(_basis) : ''} 
+    ${_basis ? composeCSSMedia('flex-basis', _basis, 'auto') : ''} 
     ${_scroll ? `
       > * {
-        max-width: calc(100% - ${gutter});
-        max-height: calc(100% - ${gutter});
+        ${composeCSSMedia('max-width', gutter, '0px', (value) => `calc(100% - ${value})`)}
+        ${composeCSSMedia('max-heigth', gutter, '0px', (value) => `calc(100% - ${value})`)}
         overflow: auto;
       }
     ` : ''}
@@ -49,8 +30,8 @@ const FlexChild = ({
       position: relative;
       > * {
         position: absolute;
-        width: calc(100% - ${gutter});
-        height: calc(100% - ${gutter});
+        ${composeCSSMedia('width', gutter, '0px', (value) => `calc(100% - ${value})`)}
+        ${composeCSSMedia('height', gutter, '0px', (value) => `calc(100% - ${value})`)}
       }
     ` : ''}
   `
@@ -115,9 +96,9 @@ const Flex = ({
     ${fullHeight ? 'min-height: 100%;' : ''}
     ${container ? `
       margin: 0;
-      padding: calc(${gutter} / 2);
+      ${composeCSSMedia('padding', gutter, null, (value) => `calc(${value} / 2)`)}
     ` : `
-      margin: calc(-${gutter} / 2);
+      ${composeCSSMedia('margin', gutter, null, (value) => `calc(-${value} / 2)`)}
     `}
 
     > * {
@@ -171,7 +152,7 @@ Flex.propTypes = {
   itemsCenter: PropTypes.bool,
   fullHeight: PropTypes.bool,
   container: PropTypes.bool,
-  gutter: PropTypes.string,
+  gutter: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
 }
 
 Flex.defaultProps = {
