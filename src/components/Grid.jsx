@@ -48,12 +48,14 @@ const Grid = ({
   children,
   columns,
   rows,
-  gutter
+  areas,
+  gutter,
 }) => {
   const StyledGrid = styled.div`
     display: grid;
     ${mediaTemplate('columns', columns)}
     ${mediaTemplate('rows', rows)}
+    ${mediaTemplate('areas', areas)}
     grid-gap: ${gutter};
   `
 
@@ -95,12 +97,14 @@ Grid.propTypes = {
   className: PropTypes.string,
   columns: PropTypes.string,
   rows: PropTypes.string,
+  areas: PropTypes.string.isRequired,
   gutter: PropTypes.string,
 }
 
 Grid.defaultProps = {
   className: null,
   columns: 'auto',
+  rows: 'auto',
   gutter: '0px',
 }
 
