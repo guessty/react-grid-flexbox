@@ -18,41 +18,6 @@ The number of different API options can however make them a little tricky to wor
 This package aims to make it easier for developers to unlock the power of Grid and FlexBox by introducing two components (`<Grid />` & `<Flex />`) with simple APIs, but under the hood enforce a consistant design pattern.
 
 
-## How To Use
-
-```jsx
-import React from 'react';
-import { Grid, Flex } from 'react-grid-flexbox';
-
-export default () => (
-  <Grid
-    rows="50px auto"
-    columns="1fr 1fr 1fr"
-    areas={`
-      "header header header"
-      "sidebar content content"
-    `}
-    gutter="20px"
-    container
-  >
-    <Flex _area="header" inline>
-      <a href="#">Link One</a>
-      <a href="#">Link Two</a>
-      <a href="#">Link Three</a>
-    </Flex>
-    <Flex _area="sidebar">
-      <a href="#">Link Four</a>
-      <a href="#">Link Five</a>
-      <a href="#">Link Six</a>
-    </Flex>
-    <Flex _area="content">
-      <h1>Content Area</h1>
-      <p>This is the main content section</p>
-    </Flex>
-  </Grid>
-);
-```
-
 ## Props
 
 ### Grid
@@ -87,3 +52,49 @@ export default () => (
 | **_scroll** *(optional)* |  <code>Boolean</code>  | `false` | Will add scrolling to child element |
 
 
+
+## Example
+
+```jsx
+import React from 'react';
+import { Grid, Flex } from 'react-grid-flexbox';
+
+export default () => (
+  <Grid
+    rows="50px auto"
+    columns="1fr 1fr 1fr"
+    areas={`
+      "header header header"
+      "sidebar content content"
+      "footer footer footer"
+    `}
+    gutter="20px"
+    incEdgeGutter
+  >
+    <Flex _area="header" inline>
+      <a href="#">Link One</a>
+      <a href="#">Link Two</a>
+      <a href="#">Link Three</a>
+    </Flex>
+    <Flex _area="sidebar">
+      <a href="#">Link Four</a>
+      <a href="#">Link Five</a>
+      <a href="#">Link Six</a>
+    </Flex>
+    <Flex _area="content" gutter="20px">
+      <Flex>
+        <h1>Content Area 1</h1>
+        <p>This is content section 1</p>
+      </Flex>
+      <Flex>
+        <h1>Content Area 2</h1>
+        <p>This is content section 2</p>
+      </Flex>
+    </Flex>
+    <Flex _area="footer" inline>
+      <a href="#">Link One</a>
+      <a href="#">Link Two</a>
+      <a href="#">Link Three</a>
+  </Grid>
+);
+```

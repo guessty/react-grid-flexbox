@@ -104,7 +104,7 @@ const Flex = ({
     align-content: flex-start;
     flex-direction: ${inline ? 'row' : 'column'};
     flex-wrap: ${wrap && inline ? 'wrap' : 'nowrap'};
-    ${composeAlignment(inline, vAlignContent, hAlignContent)}
+    ${composeAlignment()}
     ${incEdgeGutter ? `
       margin: 0;
       ${composeCSSMedia('padding', gutter, null, (value) => `calc(${value} / 2)`)}
