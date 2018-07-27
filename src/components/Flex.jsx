@@ -10,7 +10,6 @@ const FlexChild = ({
   children,
   _grow,
   _basis,
-  _reset,
   _scroll,
   gutter,
   inline,
@@ -26,7 +25,7 @@ const FlexChild = ({
         overflow: auto;
       }
     ` : ''}
-    ${!inline && _grow && _reset ? `
+    ${!inline && _grow ? `
       position: relative;
       > * {
         position: absolute;
@@ -42,7 +41,7 @@ const FlexChild = ({
     </div>
   ) : children
 
-  return (_reset || _scroll) ? (
+  return ((!inline && _grow) || _scroll) ? (
     <StyledFlexChild>
       <div>
         {renderChildWithClassName()}
@@ -60,7 +59,6 @@ FlexChild.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
   _grow: PropTypes.bool,
   _basis: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
-  _reset: PropTypes.bool,
   _scroll: PropTypes.bool,
   inline: PropTypes.bool,
   gutter: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
@@ -69,7 +67,6 @@ FlexChild.propTypes = {
 FlexChild.defaultProps = {
   className: null,
   _grow: false,
-  _reset: false,
   _scroll: false,
   _basis: null,
   inline: false,
@@ -82,19 +79,33 @@ const Flex = ({
   children,
   inline,
   wrap,
-  itemsCenter,
-  fullHeight,
-  container,
+  vAlign,
+  hAlign,
   gutter,
+  incEdgeGutter,
 }) => {
+  const composeAlignment = () => {
+    const alignMap = {
+      top: 'flex-start',
+      bottom: 'flex-end',
+      left: 'flex-start',
+      right: 'flex-end',
+      center: 'center',
+      middle: 'center',
+    }
+    return `
+      ${vAlign ? `${inline ? 'align-items' : 'justify-content'}: ${alignMap(vAlign)};` : ''}
+      ${hAlign ? `${inline ? 'justify-content' : 'align-items'}: ${alignMap(hAlign)};` : ''}
+    `
+  }
+
   const StyledFlex = styled.div`
     display: flex;
     align-content: flex-start;
     flex-direction: ${inline ? 'row' : 'column'};
     flex-wrap: ${wrap && inline ? 'wrap' : 'nowrap'};
-    ${itemsCenter ? 'align-items: center;' : ''}
-    ${fullHeight ? 'min-height: 100%;' : ''}
-    ${container ? `
+    ${composeAlignment(inline, vAlignContent, hAlignContent)}
+    ${incEdgeGutter ? `
       margin: 0;
       ${composeCSSMedia('padding', gutter, null, (value) => `calc(${value} / 2)`)}
     ` : `
@@ -149,20 +160,20 @@ Flex.propTypes = {
   className: PropTypes.string,
   inline: PropTypes.bool,
   wrap: PropTypes.bool,
-  itemsCenter: PropTypes.bool,
-  fullHeight: PropTypes.bool,
-  container: PropTypes.bool,
+  vAlign: PropTypes.string,
+  hAlign: PropTypes.string,
   gutter: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
+  incEdgeGutter: PropTypes.bool,
 }
 
 Flex.defaultProps = {
   className: null,
   inline: false,
   wrap: false,
-  itemsCenter: false,
-  fullHeight: false,
-  container: false,
+  vAlign: null,
+  hAlign: null,
   gutter: '0px',
+  incEdgeGutter: false,
 }
 
 export default Flex

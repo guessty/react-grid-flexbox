@@ -28,19 +28,19 @@ GridChild.propTypes = {
 const Grid = ({
   className,
   children,
-  columns,
-  rows,
+  columnWidth,
+  rowHeight,
   areas,
   gutter,
-  container,
+  incEdgeGutter,
 }) => {
   const StyledGrid = styled.div`
     display: grid;
-    ${composeCSSMedia('grid-template-columns', columns, 'auto')}
-    ${composeCSSMedia('grid-template-rows', rows, 'auto')}
+    ${composeCSSMedia('grid-template-columns', columnWidth, 'auto')}
+    ${composeCSSMedia('grid-template-rows', rowHeight, 'auto')}
     ${composeCSSMedia('grid-template-areas', areas)}
     ${composeCSSMedia('grid-gap', gutter)}
-    ${container ? composeCSSMedia('padding', gutter) : ''}
+    ${incEdgeGutter ? composeCSSMedia('padding', gutter) : ''}
   `
 
   const gridChildren = React.Children.map(children, (child) => {
@@ -79,19 +79,19 @@ const Grid = ({
 Grid.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
   className: PropTypes.string,
-  columns: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
-  rows: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
+  columnWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
+  rowHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
   areas: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]).isRequired,
   gutter: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
-  container: PropTypes.bool,
+  incEdgeGutter: PropTypes.bool,
 }
 
 Grid.defaultProps = {
   className: null,
-  columns: 'auto',
-  rows: 'auto',
+  columnWidth: 'auto',
+  rowHeight: 'auto',
   gutter: '0px',
-  container: false,
+  incEdgeGutter: false,
 }
 
 export default Grid
