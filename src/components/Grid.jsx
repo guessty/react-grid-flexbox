@@ -46,7 +46,7 @@ const Grid = ({
   const gridChildren = React.Children.map(children, (child) => {
     if (child) {
       const gridChildProps = {
-       '_area': child.props._area 
+       '_gridArea': child.props._gridArea 
       }
 
       const childPropsWithoutGridProps = Object.assign({}, child.props)
