@@ -11,17 +11,17 @@ const FlexChild = ({
   _flexGrow,
   _flexScroll,
   _flexBasis,
-  gutter,
+  gutterSize,
   isRow,
 }) => {
   const StyledFlexChild = styled.div`
-    ${composeCSSMedia('padding', gutter, null, (value) => `calc(${value} / 2)`)}
+    ${composeCSSMedia('padding', gutterSize, null, (value) => `calc(${value} / 2)`)}
     ${_flexGrow ? 'flex-grow: 1;' : ''}
     ${_flexBasis ? composeCSSMedia('flex-basis', _flexBasis, 'auto') : ''} 
     ${_flexScroll ? `
       > * {
-        ${composeCSSMedia('max-width', gutter, '0px', (value) => `calc(100% - ${value})`)}
-        ${composeCSSMedia('max-heigth', gutter, '0px', (value) => `calc(100% - ${value})`)}
+        ${composeCSSMedia('max-width', gutterSize, '0px', (value) => `calc(100% - ${value})`)}
+        ${composeCSSMedia('max-heigth', gutterSize, '0px', (value) => `calc(100% - ${value})`)}
         overflow: auto;
       }
     ` : ''}
@@ -29,8 +29,8 @@ const FlexChild = ({
       position: relative;
       > * {
         position: absolute;
-        ${composeCSSMedia('width', gutter, '0px', (value) => `calc(100% - ${value})`)}
-        ${composeCSSMedia('height', gutter, '0px', (value) => `calc(100% - ${value})`)}
+        ${composeCSSMedia('width', gutterSize, '0px', (value) => `calc(100% - ${value})`)}
+        ${composeCSSMedia('height', gutterSize, '0px', (value) => `calc(100% - ${value})`)}
       }
     ` : ''}
   `
@@ -61,7 +61,7 @@ FlexChild.propTypes = {
   _flexBasis: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
   _flexScroll: PropTypes.bool,
   isRow: PropTypes.bool,
-  gutter: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
+  gutterSize: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
 }
 
 FlexChild.defaultProps = {
@@ -70,7 +70,7 @@ FlexChild.defaultProps = {
   _flexScroll: false,
   _flexBasis: null,
   isRow: false,
-  gutter: '0px',
+  gutterSize: '0px',
 }
 
 
@@ -101,6 +101,8 @@ const Flex = ({
     `
   }
 
+  console.log(gutter)
+
   const StyledFlex = styled.div`
     display: flex;
     align-content: flex-start;
@@ -122,12 +124,12 @@ const Flex = ({
   const flexChildren = React.Children.map(children, (child) => {
     // Wrap any children in a div to prevent potential css flex layout overrides.
     if (child) {
-      const flexChildProps = Object.keys(FlexChild.defaultProps).reduce((props, key) => {
+      const flexChildProps = child.props ? Object.keys(FlexChild.defaultProps).reduce((props, key) => {
         if (key !== 'className') {
           props[key] = child.props[key]
         }
         return props
-      }, {})
+      }, {}) : {}
 
       const childPropsWithoutFlexProps = Object.assign({}, child.props)
 
@@ -135,11 +137,11 @@ const Flex = ({
         delete childPropsWithoutFlexProps[key]
       })
 
-      const wrapped = React.createElement('div', flexChildProps, Object.assign({}, child, {
+      const wrapped = React.createElement('div', flexChildProps, child.props ? Object.assign({}, child, {
         props: childPropsWithoutFlexProps,
-      }))
-
-      return <FlexChild { ...wrapped.props } gutter={gutter} isRow={isRow} />
+      }) : child)
+    
+      return <FlexChild { ...wrapped.props } gutterSize={gutter} isRow={isRow} />
     }
     return null
   })
