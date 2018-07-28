@@ -8,7 +8,7 @@ npm i --save react-grid-flexbox
 
 ## Peer Dependencies
 ```
-react prop-types style-components
+react prop-types styled-components
 ```
 
 ## Motivation
@@ -24,36 +24,38 @@ This package aims to make it easier for developers to unlock the power of Grid a
 |Name|Type|Default|Description|
 |----|----|-------|-----------|
 | **Main Props** | | | |
-| **areas** *(required)* |  <code>String &#124; Object (`breakpoints`)</code>  |  | Used to define the 'named' areas of the grid in which child elements can be placed |
-| **columnWidth** *(optional)* |  <code>String &#124; Object (`breakpoints`)</code>  | `auto` | Used to specify the width of the grid columns |
-| **rowHeight** *(optional)* |  <code>String &#124; Object (`breakpoints`)</code>  | `auto` | Used to specify the height of the grid rows |
-| **gutter** *(optional)* |  <code>String &#124; Object (`breakpoints`)</code>  |  | Used to add the gutter between the child elements |
-| **incEgdeGutter** *(optional)* |  <code>Boolean</code>  | `false` | Gives the grid padding around the edge. Padding is equal to gutter value |
+| **templateAreas** *(required)* |  <code>String &#124; Object (`breakpoints`)</code>  |  | Used to define the 'named' template areas of the grid in which child elements can be placed. Uses same format as CSS `grid-template-areas` |
+| **templateColumns** *(optional)* |  <code>String &#124; Object (`breakpoints`)</code>  | `auto` | Used to specify the template width of the grid columns. Uses same format as CSS `grid-template-columns` |
+| **templateRows** *(optional)* |  <code>String &#124; Object (`breakpoints`)</code>  | `auto` | Used to specify the template height of the grid rows. Uses same format as CSS `grid-template-rows` |
+| **gutter** *(optional)* |  <code>String &#124; Object (`breakpoints`)</code>  |  | Used to add the gutter between the child elements. Uses same format as CSS `grid-gap`  |
+| **incGutterEdges** *(optional)* |  <code>Boolean</code>  | `false` | Applies the gutter to the outer edges of the grid |
 | **className** *(optional)* |  <code>String</code>  |  | If present, the grid will be wrapped in an extra div with the supplied className |
 | **children** *(optional)* | <code>ReactChildren</code>  |  | Grid content |
 |----|----|-------|-----------|
 | **Child Props** | | | |
-| **_area** *(required)* |  <code>String &#124; Object (`breakpoints`)</code>  |  | Used to place the child in a grid area |
+| **_gridArea** *(required)* |  <code>String &#124; Object (`breakpoints`)</code>  |  | Used to place the child in a grid area. |
 
 ### Flex
 |Name|Type|Default|Description|
 |----|----|-------|-----------|
 | **Main Props** | | | |
-| **inline** *(optional)* | <code>Boolean</code> | `false` | Child elements by default are stacked vertically on top of one another. Setting this option will allow child elements to flow inline |
-| **wrap** *(optional)* | <code>Boolean</code> | `false` | This option only works when `inline={true}` and will allow child elements to wrap to a new line |
+| **direction** *(optional)* | <code>String</code> | `column` | Sets the `flex-direction` of child elements. Refer to CSS `flex-direction` for available options |
+| **wrap** *(optional)* | <code>Boolean</code> | `false` | This option only works when `direction="row"` and will allow child elements to wrap to a new line |
 | **gutter** *(optional)* |  <code>String &#124; Object (`breakpoints`)</code>  |  | Used to add the gutter between the child elements |
-| **incEgdeGutter** *(optional)* |  <code>Boolean</code>  | `false` | Gives the Flex padding around the edge. Padding is equal to gutter value |
+| **incGutterEdges** *(optional)* |  <code>Boolean</code>  | `false` | Applies the gutter to the outer edges of the flex box |
 | **className** *(optional)* |  <code>String</code>  |  | If present, the grid will be wrapped in an extra div with the supplied className |
 | **children** *(optional)* | <code>ReactChildren</code>  |  | Flex content |
 |----|----|-------|-----------|
 | **Child Props** | | | |
-| **_basis** *(optional)* |  <code>String &#124; Object (`breakpoints`)</code>  | | Only works in when `inline={true}` and will set the width of the child element |
+| **_basis** *(optional)* |  <code>String &#124; Object (`breakpoints`)</code>  | | Only works in when `direction="row"` and will set the `flex-basis` of the child element |
 | **_grow** *(optional)* |  <code>Boolean</code>  | `false` | Will cause child element to grow to fill any available space |
 | **_scroll** *(optional)* |  <code>Boolean</code>  | `false` | Will add scrolling to child element |
 
 
 
-## Example
+## Examples
+
+### 1) Simple Grid
 
 ```jsx
 import React from 'react';
@@ -61,40 +63,164 @@ import { Grid, Flex } from 'react-grid-flexbox';
 
 export default () => (
   <Grid
-    rows="50px auto"
-    columns="1fr 1fr 1fr"
+    templateRows="50px auto 100px"
+    templateColumns="1fr 1fr 1fr"
     areas={`
       "header header header"
-      "sidebar content content"
+      "sidebar main main"
       "footer footer footer"
     `}
     gutter="20px"
-    incEdgeGutter
+    incGutterEdges
   >
-    <Flex _area="header" inline>
-      <a href="#">Link One</a>
-      <a href="#">Link Two</a>
-      <a href="#">Link Three</a>
+    <div _gridArea="header">...Header Content</div>
+    <div _gridArea="sidebar">...SideBar Content</div>
+    <div _gridArea="main">...Main Content</div>
+    <div _gridArea="footer">...Footer Content</div>
+  </Grid>
+);
+```
+
+
+### 2) Advanced Responsive Grid
+
+```jsx
+import React from 'react';
+import { Grid, Flex } from 'react-grid-flexbox';
+
+export default () => (
+  <Grid
+    templateRows={{
+      tn: '50px 80px auto 100px',
+      '600px': '80px 50px auto 100px',
+      md: '50px auto 100px'
+    }}
+    templateColumns={{
+      tn: '100%',
+      md: '1fr 1fr 1fr'
+    }}
+    areas={{
+      tn: `
+        "header"
+        "sidebar"
+        "main"
+        "footer"
+      `,
+      '600px': `
+        "sidebar"
+        "header"
+        "main"
+        "footer"
+      `,
+      md: `
+        "header header header"
+        "sidebar main main"
+        "footer footer footer"
+      `,
+    }}
+    gutter={{
+      tn: '10px',
+      '600px': '10px 20px',
+      md: '20px',
+    }}
+    incGutterEdges
+  >
+    <div _gridArea="header">...Header Content</div>
+    <div _gridArea="sidebar">...SideBar Content</div>
+    <div _gridArea="main">...Main Content</div>
+    <div _gridArea="footer">...Footer Content</div>
+  </Grid>
+);
+```
+
+
+### 3) Simple Flex
+
+```jsx
+import React from 'react';
+import { Grid, Flex } from 'react-grid-flexbox';
+
+export default () => (
+  <Flex
+    direction="row"
+    gutter="20px"
+    incGutterEdges
+  >
+    <div>1</div>
+    <div>2</div>
+    <div>3</div>
+    <div>4</div>
+  </Flex>
+);
+```
+
+
+### 2) Combined Grid and Flex
+
+```jsx
+import React from 'react';
+import { Grid, Flex } from 'react-grid-flexbox';
+
+export default () => (
+  <Grid
+    templateRows={{
+      tn: '50px auto 100px',
+      md: '50px auto 100px'
+    }}
+    templateColumns={{
+      tn: '100%',
+      md: '1fr 1fr 1fr'
+    }}
+    areas={{
+      tn: `
+        "header"
+        "main"
+        "footer"
+      `,
+      md: `
+        "header header header"
+        "sidebar main main"
+        "footer footer footer"
+      `,
+    }}
+    gutter="20px"
+    incGutterEdges
+  >
+    <Flex _gridArea="header" direction="row">
+      <a _flexBasis="25%" href="#">Link One</a>
+      <a _flexBasis="25%" href="#">Link Two</a>
+      <a _flexBasis="25%" href="#">Link Three</a>
+      <a _flexBasis="25%" href="#">Link Four</a>
     </Flex>
-    <Flex _area="sidebar">
-      <a href="#">Link Four</a>
-      <a href="#">Link Five</a>
-      <a href="#">Link Six</a>
+    <Flex _gridArea={{ tn: 'auto', md: 'sidebar' }}>
+      <button>Button One</button>
+      <button>Button Two</button>
+      <button>Button Three</button>
+      <button>Button Four</button>
     </Flex>
-    <Flex _area="content" gutter="20px">
-      <Flex>
-        <h1>Content Area 1</h1>
-        <p>This is content section 1</p>
+    <Flex _gridArea="main" direction="row" wrap>
+      <Flex
+        _flexBasis={{
+          tn: '100%',
+          md: '50%'
+        }}
+        gutter="20px"
+      >
+        <h1>Title One</h1>
+        <p>Paragraph One</p>
       </Flex>
-      <Flex>
-        <h1>Content Area 2</h1>
-        <p>This is content section 2</p>
+      <Flex
+        _flexBasis={{
+          tn: '100%',
+          md: '50%'
+        }}
+        gutter="20px"
+      >
+        <h1>Title Two</h1>
+        <p>Paragraph Two</p>
       </Flex>
     </Flex>
-    <Flex _area="footer" inline>
-      <a href="#">Link One</a>
-      <a href="#">Link Two</a>
-      <a href="#">Link Three</a>
+    <Flex _gridArea="footer">...Footer Content</div>
   </Grid>
 );
 ```

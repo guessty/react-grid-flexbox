@@ -8,24 +8,24 @@ import { composeCSSMedia } from './../helpers'
 const FlexChild = ({
   className,
   children,
-  _grow,
-  _basis,
-  _scroll,
+  _flexGrow,
+  _flexScroll,
+  _flexBasis,
   gutter,
-  inline,
+  isRow,
 }) => {
   const StyledFlexChild = styled.div`
     ${composeCSSMedia('padding', gutter, null, (value) => `calc(${value} / 2)`)}
-    ${_grow ? 'flex-grow: 1;' : ''}
-    ${_basis ? composeCSSMedia('flex-basis', _basis, 'auto') : ''} 
-    ${_scroll ? `
+    ${_flexGrow ? 'flex-grow: 1;' : ''}
+    ${_flexBasis ? composeCSSMedia('flex-basis', _flexBasis, 'auto') : ''} 
+    ${_flexScroll ? `
       > * {
         ${composeCSSMedia('max-width', gutter, '0px', (value) => `calc(100% - ${value})`)}
         ${composeCSSMedia('max-heigth', gutter, '0px', (value) => `calc(100% - ${value})`)}
         overflow: auto;
       }
     ` : ''}
-    ${!inline && _grow ? `
+    ${!isRow && _flexGrow ? `
       position: relative;
       > * {
         position: absolute;
@@ -41,7 +41,7 @@ const FlexChild = ({
     </div>
   ) : children
 
-  return ((!inline && _grow) || _scroll) ? (
+  return ((!isRow && _flexGrow) || _flexScroll) ? (
     <StyledFlexChild>
       <div>
         {renderChildWithClassName()}
@@ -57,19 +57,19 @@ const FlexChild = ({
 FlexChild.propTypes = {
   className: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
-  _grow: PropTypes.bool,
-  _basis: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
-  _scroll: PropTypes.bool,
-  inline: PropTypes.bool,
+  _flexGrow: PropTypes.bool,
+  _flexBasis: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
+  _flexScroll: PropTypes.bool,
+  isRow: PropTypes.bool,
   gutter: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
 }
 
 FlexChild.defaultProps = {
   className: null,
-  _grow: false,
-  _scroll: false,
-  _basis: null,
-  inline: false,
+  _flexGrow: false,
+  _flexScroll: false,
+  _flexBasis: null,
+  isRow: false,
   gutter: '0px',
 }
 
@@ -77,13 +77,15 @@ FlexChild.defaultProps = {
 const Flex = ({
   className,
   children,
-  inline,
+  direction,
   wrap,
   vAlign,
   hAlign,
   gutter,
-  incEdgeGutter,
+  incGutterEdges,
 }) => {
+  const isRow = direction === 'row' || direction === 'row-reverse'
+
   const composeAlignment = () => {
     const alignMap = {
       top: 'flex-start',
@@ -94,18 +96,18 @@ const Flex = ({
       middle: 'center',
     }
     return `
-      ${vAlign ? `${inline ? 'align-items' : 'justify-content'}: ${alignMap(vAlign)};` : ''}
-      ${hAlign ? `${inline ? 'justify-content' : 'align-items'}: ${alignMap(hAlign)};` : ''}
+      ${vAlign ? `${isRow ? 'align-items' : 'justify-content'}: ${alignMap(vAlign)};` : ''}
+      ${hAlign ? `${isRow ? 'justify-content' : 'align-items'}: ${alignMap(hAlign)};` : ''}
     `
   }
 
   const StyledFlex = styled.div`
     display: flex;
     align-content: flex-start;
-    flex-direction: ${inline ? 'row' : 'column'};
-    flex-wrap: ${wrap && inline ? 'wrap' : 'nowrap'};
+    ${direction ? `flex-direction: ${direction};` : ''}
+    flex-wrap: ${wrap && isRow ? 'wrap' : 'nowrap'};
     ${composeAlignment()}
-    ${incEdgeGutter ? `
+    ${incGutterEdges ? `
       margin: 0;
       ${composeCSSMedia('padding', gutter, null, (value) => `calc(${value} / 2)`)}
     ` : `
@@ -137,7 +139,7 @@ const Flex = ({
         props: childPropsWithoutFlexProps,
       }))
 
-      return <FlexChild { ...wrapped.props } gutter={gutter} isInline={inline} />
+      return <FlexChild { ...wrapped.props } gutter={gutter} isRow={isRow} />
     }
     return null
   })
@@ -158,22 +160,22 @@ const Flex = ({
 Flex.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
   className: PropTypes.string,
-  inline: PropTypes.bool,
+  direction: PropTypes.string,
   wrap: PropTypes.bool,
   vAlign: PropTypes.string,
   hAlign: PropTypes.string,
   gutter: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
-  incEdgeGutter: PropTypes.bool,
+  incGutterEdges: PropTypes.bool,
 }
 
 Flex.defaultProps = {
   className: null,
-  inline: false,
+  direction: 'column',
   wrap: false,
   vAlign: null,
   hAlign: null,
   gutter: '0px',
-  incEdgeGutter: false,
+  incGutterEdges: false,
 }
 
 export default Flex

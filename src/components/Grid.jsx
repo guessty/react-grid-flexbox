@@ -7,10 +7,10 @@ import { composeCSSMedia } from './../helpers'
 
 const GridChild = ({
   children,
-  _area,
+  _gridArea,
 }) => {
   const StyledGridChild = styled.div`
-    ${composeCSSMedia('grid-area', _area, 'auto')}
+    ${composeCSSMedia('grid-area', _gridArea, 'auto')}
   `
 
   return (
@@ -22,25 +22,25 @@ const GridChild = ({
 
 GridChild.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
-  _area: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]).isRequired,
+  _gridArea: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]).isRequired,
 }
 
 const Grid = ({
   className,
   children,
-  columnWidth,
-  rowHeight,
-  areas,
+  templateRows,
+  templateColumns,
+  templateAreas,
   gutter,
-  incEdgeGutter,
+  incGutterEdges,
 }) => {
   const StyledGrid = styled.div`
     display: grid;
-    ${composeCSSMedia('grid-template-columns', columnWidth, 'auto')}
-    ${composeCSSMedia('grid-template-rows', rowHeight, 'auto')}
-    ${composeCSSMedia('grid-template-areas', areas)}
+    ${composeCSSMedia('grid-template-columns', templateColumns, 'auto')}
+    ${composeCSSMedia('grid-template-rows', templateRows, 'auto')}
+    ${composeCSSMedia('grid-template-areas', templateAreas)}
     ${composeCSSMedia('grid-gap', gutter)}
-    ${incEdgeGutter ? composeCSSMedia('padding', gutter) : ''}
+    ${incGutterEdges ? composeCSSMedia('padding', gutter) : ''}
   `
 
   const gridChildren = React.Children.map(children, (child) => {
@@ -79,19 +79,19 @@ const Grid = ({
 Grid.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
   className: PropTypes.string,
-  columnWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
-  rowHeight: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
-  areas: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]).isRequired,
+  templateColumns: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
+  templateRows: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
+  templateAreas: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]).isRequired,
   gutter: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
-  incEdgeGutter: PropTypes.bool,
+  incGutterEdges: PropTypes.bool,
 }
 
 Grid.defaultProps = {
   className: null,
-  columnWidth: 'auto',
-  rowHeight: 'auto',
+  templateColumns: 'auto',
+  templateRows: 'auto',
   gutter: '0px',
-  incEdgeGutter: false,
+  incGutterEdges: false,
 }
 
 export default Grid
