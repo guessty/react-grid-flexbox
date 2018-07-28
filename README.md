@@ -171,7 +171,7 @@ export default () => (
       tn: '100%',
       md: '1fr 1fr 1fr'
     }}
-    areas={{
+    templateAreas={{
       tn: `
         "header"
         "main"
