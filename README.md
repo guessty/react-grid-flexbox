@@ -1,21 +1,29 @@
 # react-grid-flexbox
 A couple of simple React components that implement CSS Grid and FlexBox to create powerful layouts.
 
+
+
 ## Install
 ```
 npm i --save react-grid-flexbox
 ```
+
+
 
 ## Peer Dependencies
 ```
 react prop-types styled-components
 ```
 
+
+
 ## Motivation
 The CSS Grid and FlexBox APIs are brilliant and can work beaufifully together to create just about any layout you can think of.
 The number of different API options can however make them a little tricky to work with and when throw in things like different vendor prefixs, gutters and resposive design you've got something quite complicated in your hands.
 
 This package aims to make it easier for developers to unlock the power of Grid and FlexBox by introducing two components (`<Grid />` & `<Flex />`) with simple APIs, but under the hood enforce a consistant design pattern.
+
+
 
 
 ## Props
@@ -50,6 +58,8 @@ This package aims to make it easier for developers to unlock the power of Grid a
 | **_basis** *(optional)* |  <code>String &#124; Object (`breakpoints`)</code>  | | Only works in when `direction="row"` and will set the `flex-basis` of the child element |
 | **_grow** *(optional)* |  <code>Boolean</code>  | `false` | Will cause child element to grow to fill any available space |
 | **_scroll** *(optional)* |  <code>Boolean</code>  | `false` | Will add scrolling to child element |
+
+
 
 
 
@@ -155,7 +165,7 @@ export default () => (
 ```
 
 
-### 2) Combined Grid and Flex
+### 4) Combined Grid and Flex
 
 ```jsx
 import React from 'react';
