@@ -220,7 +220,7 @@ export default () => (
         <p>Paragraph Two</p>
       </Flex>
     </Flex>
-    <Flex _gridArea="footer">...Footer Content</div>
+    <Flex _gridArea="footer">...Footer Content</Flex>
   </Grid>
 );
 ```
