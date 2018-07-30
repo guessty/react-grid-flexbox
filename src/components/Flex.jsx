@@ -8,16 +8,20 @@ import { composeCSSMedia } from './../helpers'
 const FlexChild = ({
   className,
   children,
-  _flexGrow,
-  _flexScroll,
   _flexBasis,
+  _flexGrow,
+  _flexReset,
+  _flexScroll,
   gutterSize,
-  isRow,
 }) => {
   const StyledFlexChild = styled.div`
     ${composeCSSMedia('padding', gutterSize, null, (value) => `calc(${value} / 2)`)}
-    ${_flexGrow ? 'flex-grow: 1;' : ''}
-    ${_flexBasis ? composeCSSMedia('flex-basis', _flexBasis, 'auto') : ''} 
+    ${_flexBasis ? `
+      ${composeCSSMedia('flex-basis', _flexBasis, 'auto')}
+    ` : ''}
+    ${_flexGrow ? `
+      flex-grow: 1;
+    ` : ''}
     ${_flexScroll ? `
       > * {
         ${composeCSSMedia('max-width', gutterSize, '0px', (value) => `calc(100% - ${value})`)}
@@ -25,12 +29,12 @@ const FlexChild = ({
         overflow: auto;
       }
     ` : ''}
-    ${!isRow && _flexGrow ? `
+    ${_flexReset ? `
       position: relative;
       > * {
         position: absolute;
-        ${composeCSSMedia('width', gutterSize, '0px', (value) => `calc(100% - ${value})`)}
-        ${composeCSSMedia('height', gutterSize, '0px', (value) => `calc(100% - ${value})`)}
+        ${composeCSSMedia('min-width', gutterSize, '100%', (value) => `calc(100% - ${value})`)}
+        ${composeCSSMedia('min-height', gutterSize, '100%', (value) => `calc(100% - ${value})`)}
       }
     ` : ''}
   `
@@ -41,7 +45,7 @@ const FlexChild = ({
     </div>
   ) : children
 
-  return ((!isRow && _flexGrow) || _flexScroll) ? (
+  return (_flexScroll || _flexReset) ? (
     <StyledFlexChild>
       <div>
         {renderChildWithClassName()}
@@ -57,19 +61,19 @@ const FlexChild = ({
 FlexChild.propTypes = {
   className: PropTypes.string,
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
-  _flexGrow: PropTypes.bool,
   _flexBasis: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
+  _flexGrow: PropTypes.bool,
   _flexScroll: PropTypes.bool,
-  isRow: PropTypes.bool,
+  _flexReset: PropTypes.bool,
   gutterSize: PropTypes.oneOfType([PropTypes.string, PropTypes.objectOf(PropTypes.string)]),
 }
 
 FlexChild.defaultProps = {
   className: null,
+  _flexBasis: null,
   _flexGrow: false,
   _flexScroll: false,
-  _flexBasis: null,
-  isRow: false,
+  _flexReset: false,
   gutterSize: '0px',
 }
 
@@ -78,6 +82,7 @@ const Flex = ({
   className,
   children,
   direction,
+  full,
   wrap,
   vAlign,
   hAlign,
@@ -101,8 +106,6 @@ const Flex = ({
     `
   }
 
-  console.log(gutter)
-
   const StyledFlex = styled.div`
     display: flex;
     align-content: flex-start;
@@ -115,6 +118,10 @@ const Flex = ({
     ` : `
       ${composeCSSMedia('margin', gutter, null, (value) => `calc(-${value} / 2)`)}
     `}
+    ${full ? `
+      ${composeCSSMedia('min-width', gutter, '0px', (value) => `calc(100% + ${value})`)}
+      ${composeCSSMedia('min-height', gutter, '0px', (value) => `calc(100% + ${value})`)}
+    ` : ''}
 
     > * {
       max-width: 100%;
@@ -141,7 +148,7 @@ const Flex = ({
         props: childPropsWithoutFlexProps,
       }) : child)
     
-      return <FlexChild { ...wrapped.props } gutterSize={gutter} isRow={isRow} />
+      return <FlexChild { ...wrapped.props } gutterSize={gutter} />
     }
     return null
   })
@@ -163,6 +170,7 @@ Flex.propTypes = {
   children: PropTypes.oneOfType([PropTypes.node, PropTypes.arrayOf(PropTypes.node)]),
   className: PropTypes.string,
   direction: PropTypes.string,
+  full: PropTypes.bool,
   wrap: PropTypes.bool,
   vAlign: PropTypes.string,
   hAlign: PropTypes.string,
@@ -173,6 +181,7 @@ Flex.propTypes = {
 Flex.defaultProps = {
   className: null,
   direction: 'column',
+  full: false,
   wrap: false,
   vAlign: null,
   hAlign: null,

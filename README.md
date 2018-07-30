@@ -21,7 +21,8 @@ react prop-types styled-components
 The CSS Grid and FlexBox APIs are brilliant and can work beaufifully together to create just about any layout you can think of.
 The number of different API options can however make them a little tricky to work with and when throw in things like different vendor prefixs, gutters and resposive design you've got something quite complicated in your hands.
 
-This package aims to make it easier for developers to unlock the power of Grid and FlexBox by introducing two components (`<Grid />` & `<Flex />`) with simple APIs, but under the hood enforce a consistant design pattern.
+This package aims to make it easier for developers to unlock the power of Grid and FlexBox by introducing two simple to use components (`<Grid />` & `<Flex />`).
+
 
 
 
@@ -32,32 +33,31 @@ This package aims to make it easier for developers to unlock the power of Grid a
 |Name|Type|Default|Description|
 |----|----|-------|-----------|
 | **Main Props** | | | |
-| **templateAreas** *(required)* |  <code>String &#124; Object (`breakpoints`)</code>  |  | Used to define the 'named' template areas of the grid in which child elements can be placed. Uses same format as CSS `grid-template-areas` |
-| **templateColumns** *(optional)* |  <code>String &#124; Object (`breakpoints`)</code>  | `auto` | Used to specify the template width of the grid columns. Uses same format as CSS `grid-template-columns` |
-| **templateRows** *(optional)* |  <code>String &#124; Object (`breakpoints`)</code>  | `auto` | Used to specify the template height of the grid rows. Uses same format as CSS `grid-template-rows` |
-| **gutter** *(optional)* |  <code>String &#124; Object (`breakpoints`)</code>  |  | Used to add the gutter between the child elements. Uses same format as CSS `grid-gap`  |
+| **templateAreas** *(required)* |  <code>String &#124; ObjectOf(`...breakpoints`)</code>  |  | Used to define the 'named' template areas of the grid in which child elements can be placed. Uses same format as CSS `grid-template-areas` |
+| **templateColumns** *(optional)* |  <code>String &#124; ObjectOf(`...breakpoints`)</code>  | `auto` | Used to specify the template width of the grid columns. Uses same format as CSS `grid-template-columns` |
+| **templateRows** *(optional)* |  <code>String &#124; ObjectOf(`...breakpoints`)</code>  | `auto` | Used to specify the template height of the grid rows. Uses same format as CSS `grid-template-rows` |
+| **gutter** *(optional)* |  <code>String &#124; ObjectOf(`...breakpoints`)</code>  |  | Used to add the gutter between the child elements. Uses same format as CSS `grid-gap`  |
 | **incGutterEdges** *(optional)* |  <code>Boolean</code>  | `false` | Applies the gutter to the outer edges of the grid |
 | **className** *(optional)* |  <code>String</code>  |  | If present, the grid will be wrapped in an extra div with the supplied className |
 | **children** *(optional)* | <code>ReactChildren</code>  |  | Grid content |
 |----|----|-------|-----------|
 | **Child Props** | | | |
-| **_gridArea** *(required)* |  <code>String &#124; Object (`breakpoints`)</code>  |  | Used to place the child in a grid area. |
+| **_gridArea** *(required)* |  <code>String &#124; ObjectOf(`...breakpoints`)</code>  |  | Used to place the child in a grid area. |
 
 ### Flex
 |Name|Type|Default|Description|
 |----|----|-------|-----------|
 | **Main Props** | | | |
-| **direction** *(optional)* | <code>String</code> | `column` | Sets the `flex-direction` of child elements. Refer to CSS `flex-direction` for available options |
+| **direction** *(optional)* | <code>String &#124; ObjectOf(`...breakpoints`)</code> | `column` | Sets the `flex-direction` of child elements. Refer to CSS `flex-direction` for available options |
 | **wrap** *(optional)* | <code>Boolean</code> | `false` | This option only works when `direction="row"` and will allow child elements to wrap to a new line |
-| **gutter** *(optional)* |  <code>String &#124; Object (`breakpoints`)</code>  |  | Used to add the gutter between the child elements |
+| **gutter** *(optional)* |  <code>String &#124; ObjectOf(`...breakpoints`)</code>  |  | Used to add the gutter between the child elements |
 | **incGutterEdges** *(optional)* |  <code>Boolean</code>  | `false` | Applies the gutter to the outer edges of the flex box |
 | **className** *(optional)* |  <code>String</code>  |  | If present, the grid will be wrapped in an extra div with the supplied className |
 | **children** *(optional)* | <code>ReactChildren</code>  |  | Flex content |
 |----|----|-------|-----------|
 | **Child Props** | | | |
-| **_basis** *(optional)* |  <code>String &#124; Object (`breakpoints`)</code>  | | Only works in when `direction="row"` and will set the `flex-basis` of the child element |
-| **_grow** *(optional)* |  <code>Boolean</code>  | `false` | Will cause child element to grow to fill any available space |
-| **_scroll** *(optional)* |  <code>Boolean</code>  | `false` | Will add scrolling to child element |
+| **_flexBasis** *(optional)* |  <code>String &#124; ObjectOf(`...breakpoints`)</code>  | `auto` | Sets the size of the child element using the CSS `flex-basis` prop and supports `auto` and `[num]%/px/em/rem` |
+| **_flexGrow** *(optional)* |  <code>Boolean</code>  | `false` | Will cause child element to `grow` and fill remaining space (`flex-grow`) |
 
 
 
@@ -75,7 +75,7 @@ export default () => (
   <Grid
     templateRows="50px auto 100px"
     templateColumns="1fr 1fr 1fr"
-    areas={`
+    templateAreas={`
       "header header header"
       "sidebar main main"
       "footer footer footer"
@@ -109,7 +109,7 @@ export default () => (
       tn: '100%',
       md: '1fr 1fr 1fr'
     }}
-    areas={{
+    templateAreas={{
       tn: `
         "header"
         "sidebar"
