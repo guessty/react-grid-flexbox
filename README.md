@@ -19,15 +19,24 @@ react prop-types styled-components
 
 ## Motivation
 The CSS Grid and FlexBox APIs are brilliant and can work beaufifully together to create just about any layout you can think of.
-The number of different API options can however make them a little tricky to work with and when throw in things like different vendor prefixs, gutters and resposive design you've got something quite complicated in your hands.
+The number of different API options can however make them a little tricky to work with and when you throw in things like different vendor prefixs, gutters and resposive design you've got something quite complicated in your hands.
 
-This package aims to make it easier for developers to unlock the power of Grid and FlexBox by introducing two simple to use components (`<Grid />` & `<Flex />`).
+This package aims to make it easier for developers to unlock the power of Grid and FlexBox by introducing two components (`<Grid />` & `<Flex />`).
 
-
+Both components offer a stripped down api for simplicity, while under the hood enforce a strict set of principals to ensure layouts are robust and it is difficult for them to be compramised by additional css.
 
 
 
 ## Props
+
+**Quick note on Child Props**
+Child Props (e.g `_gridArea`, `_flexBasis` & `_flexGrow`) can be applied to any child elemment of `<Flex />` or `<Grid />` regardless of the node type. See Example 1 below.
+
+**Quick note on Breakpoints**
+Many of the props also support passing in a breakpoints object, giving you greater control over the layouts without having to touch any css.
+The pre configured breakpoints are:
+`{ tn: '0', xs: '500px', sm: '768px', md: '992px', lg: '1200px', xl: '1440px', hg: '1920px' }`
+The props also support passing in any custom breakpoints object though for added convenience. - See Example 2 below.
 
 ### Grid
 |Name|Type|Default|Description|
@@ -50,6 +59,9 @@ This package aims to make it easier for developers to unlock the power of Grid a
 | **Main Props** | | | |
 | **direction** *(optional)* | <code>String &#124; ObjectOf(`...breakpoints`)</code> | `column` | Sets the `flex-direction` of child elements. Refer to CSS `flex-direction` for available options |
 | **wrap** *(optional)* | <code>Boolean</code> | `false` | This option only works when `direction="row"` and will allow child elements to wrap to a new line |
+| **full** *(optional)* | <code>Boolean</code> | `false` | This option only sets `min-height` and `min-width` to `100%` |
+| **vAlign** *(optional)* | <code>String</code> | `top` | Sets the vertical alignment of child elements (`top`, `middle`, `bottom`) |
+| **hAlign** *(optional)* | <code>String</code> | `left` | Sets the horizontal alignment of child elements (`left`, `center`, `right`) |
 | **gutter** *(optional)* |  <code>String &#124; ObjectOf(`...breakpoints`)</code>  |  | Used to add the gutter between the child elements |
 | **incGutterEdges** *(optional)* |  <code>Boolean</code>  | `false` | Applies the gutter to the outer edges of the flex box |
 | **className** *(optional)* |  <code>String</code>  |  | If present, the grid will be wrapped in an extra div with the supplied className |
