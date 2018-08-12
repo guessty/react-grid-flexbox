@@ -101,8 +101,8 @@ const Flex = ({
       middle: 'center',
     }
     return `
-      ${vAlign ? `${isRow ? 'align-items' : 'justify-content'}: ${alignMap(vAlign)};` : ''}
-      ${hAlign ? `${isRow ? 'justify-content' : 'align-items'}: ${alignMap(hAlign)};` : ''}
+      ${vAlign ? `${isRow ? 'align-items' : 'justify-content'}: ${alignMap[vAlign]};` : ''}
+      ${hAlign ? `${isRow ? 'justify-content' : 'align-items'}: ${alignMap[hAlign]};` : ''}
     `
   }
 
