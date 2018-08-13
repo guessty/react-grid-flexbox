@@ -1,14 +1,19 @@
 
-export const defaultBreakpoints = {
+export const defaultBreakpoints: {
+  [key: string]: string;
+} = {
   tn: '0px', xs: '500px', sm: '768px', md: '992px',
   lg: '1200px', xl: '1440px', hg: '1920px',
 }
 
+
 export const composeCSSMedia = (
-  cssProp,
-  value,
-  defaultValue,
-  parseValue = (_value) => _value
+  cssProp: string,
+  value: string | {
+    [key: string]: string;
+  },
+  defaultValue?: string,
+  parseValue = (_value: any) => _value
 ) => {
   if (typeof value === 'string') {
     return `${cssProp}: ${parseValue(value)};`
