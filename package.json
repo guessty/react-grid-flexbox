@@ -1,6 +1,6 @@
 {
   "name": "react-grid-flexbox",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A set of React components that implement css grid and flex-box ",
   "keywords": [
     "react",
@@ -13,7 +13,7 @@
   "main": "dist/react-grid-flexbox.cjs.js",
   "module": "dist/react-grid-flexbox.esm.js",
   "browser": "dist/react-grid-flexbox.umd.js",
-  "types": "dist/index.d.ts",
+  "types": "dist/main.d.ts",
   "files": [
     "dist"
   ],
