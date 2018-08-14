@@ -8,9 +8,11 @@ interface IGridItemProps {
 }
 
 const GridItem = (props: IGridItemProps) => (
-  <StyledGridItem _gridArea={props._gridArea}>
-    { props.children }
-  </StyledGridItem>
+  <React.Fragment>
+    <StyledGridItem _gridArea={props._gridArea}>
+      { props.children }
+    </StyledGridItem>
+  </React.Fragment>
 )
 
 export default GridItem

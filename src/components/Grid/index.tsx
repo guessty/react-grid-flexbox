@@ -1,7 +1,8 @@
 import * as React from 'react'
 //
-import GridItem from './GridItem'
+import GridItem from './GridItem/index'
 import StyledGrid from './StyledGrid'
+
 
 interface IGridProps {
   children: any
@@ -14,34 +15,47 @@ interface IGridProps {
 }
 
 interface IGridChildProps {
+  children: any
+  _gridArea?: string | object
+  ['data-grid-area']?: string | object
+}
+
+interface IWrappeedGridChildProps {
+  children?: any
   _gridArea?: string | object
 }
+
+const keysToDelete = [
+  '_gridArea', 'data-grid-area'
+]
 
 const Grid = (props: IGridProps) => {
   const gridChildren = React.Children.map(props.children, (child: React.ReactElement<IGridChildProps>) => {
     // Wrap any children in a div to prevent potential css flex layout overrides.
     if (child) {
 
-      const gridChildProps: any = {
-        '_gridArea': child.props._gridArea 
+      const type: any = child.type
+      if (type === GridItem) {
+        return child
+      }
+
+      const wrappedgGridChildProps: IWrappeedGridChildProps = {
+        '_gridArea': child.props['data-grid-area'] || child.props._gridArea,
        }
 
       const childPropsWithoutFlexProps: any = {...child.props}
 
-      Object.keys(gridChildProps).forEach((key) => {
+      keysToDelete.forEach((key) => {
         delete childPropsWithoutFlexProps[key]
       })
 
-      const wrapped = React.createElement('div', gridChildProps, child.props ? {
+      const wrapped:any = React.createElement('div', wrappedgGridChildProps, child.props ? {
         ...child,
         props: childPropsWithoutFlexProps,
       } : child)
     
       return (
-        <GridItem
-          children={wrapped.props.children}
-          _gridArea={wrapped.props._gridArea}
-        />
+        <GridItem {...wrapped.props} />
       )
     }
     return null

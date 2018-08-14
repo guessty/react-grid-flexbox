@@ -3,12 +3,12 @@ import * as React from 'react'
 import StyledFlexItem from './StyledFlexItem'
 
 interface IFlexItemProps {
-  children: any
-  gutterSize: string | object
-  _flexBasis: string | object
-  _flexGrow: boolean
-  _flexScroll: boolean
-  _flexReset: boolean
+  children?: any
+  gutterSize?: string | object
+  _flexBasis?: string | object
+  _flexGrow?: boolean
+  _flexScroll?: boolean
+  _flexReset?: boolean
 }
 
 const FlexItem = (props: IFlexItemProps) => {
