@@ -80,6 +80,7 @@ const Flex = (props: IFlexProps) => {
   const jsx = () => (
     <StyledFlex
       direction={props.direction ? props.direction : 'column'}
+      isRow={props.direction === 'row' || props.direction === 'row-reverse'}
       vAlign={props.vAlign}
       hAlign={props.hAlign}
       gutter={props.gutter}
